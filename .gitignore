@@ -10,3 +10,6 @@ whl_files/
 lab/
 
 logo/NebulaFlow.psd
+
+# 个人密钥配置
+.nebulaflow_vault

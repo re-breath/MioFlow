@@ -10,10 +10,10 @@ from pathlib import Path
 import sys
 import argparse
 
-API_KEY = "5NxP3sMUSrESWwk7cih4G6yjS8Br7ToB"
-import gzip
-import urllib.request
-from pathlib import Path
+API_KEY = os.environ.get("NEBULA_MATERIALS_PROJECT_KEY", "")
+if not API_KEY:
+    print("Error: NEBULA_MATERIALS_PROJECT_KEY not set. 请先 source ~/.rebreath/.nebulaflow_vault")
+    sys.exit(1)
 
 #mpid = "mp-2741"
 parser = argparse.ArgumentParser(description="Download phonon bandstructure and DOS from Material Project.")

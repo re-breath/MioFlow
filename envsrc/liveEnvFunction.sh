@@ -615,8 +615,14 @@ PY
 
 get_map_distance() {
     # 该函数可以查询两地之间的距离
-    local AMAP_KEY="ebb8ae1f79a839931faafd8dcd8fdcfe"
-    
+    local AMAP_KEY="${NEBULA_AMAP_KEY}"
+
+    if [ -z "$AMAP_KEY" ]; then
+        echo "错误: NEBULA_AMAP_KEY 未设置。"
+        echo "请先在 ~/.rebreath/.nebulaflow_vault 中配置高德地图 API Key"
+        return 1
+    fi
+
     if [ $# -lt 1 ]; then
         echo "使用方法:"
         echo "  1) 查两地距离: mapdist <出发地> <目的地>"

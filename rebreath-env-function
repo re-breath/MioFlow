@@ -12,7 +12,8 @@
 # SECTION 1: Environment Setup
 # =============================================================================
 
-source ~/.rebreath/.config
+[ -f ~/.rebreath/.config ] && source ~/.rebreath/.config
+[ -f ~/.rebreath/.nebulaflow_vault ] && source ~/.rebreath/.nebulaflow_vault
 export PATH=$PATH:$HOME/.rebreath
 
 alias loadenv='source ~/.bashrc'
@@ -110,33 +111,46 @@ relib() {
 # =============================================================================
 
 use_agent(){
-    export http_proxy="http://192.168.1.10:3128"
+    local proxy="${NEBULA_HTTP_PROXY}"
+    if [ -z "$proxy" ]; then
+        echo "错误: NEBULA_HTTP_PROXY 未设置。请先在 ~/.rebreath/.nebulaflow_vault 中配置。"
+        return 1
+    fi
+    export http_proxy="$proxy"
+    export https_proxy="$proxy"
 }
 
 
 # Function: proxy_download
 # Usage:    proxy_download "wget http://example.com/file.tar.gz"
 # Download files via SSH proxy to local machine.
+# Dependencies: NEBULA_SSH_REMOTE_SERVER, NEBULA_SSH_KEY_PATH in vault
 proxy_download() {
-    local remote_server="dhk@10.14.0.15"
+    local remote_server="${NEBULA_SSH_REMOTE_SERVER}"
+    local ssh_key="${NEBULA_SSH_KEY_PATH:-${HOME}/.ssh/id_rsa}"
     local remote_path="/home/dhk/rebreath/proxy_downfiles"
     local remote_temp_path="${remote_path}/temp"
 
-    ssh -i ~/.ssh/id_rsa ${remote_server} "mkdir -p ${remote_temp_path} && cd ${remote_temp_path} && $1"
+    if [ -z "$remote_server" ]; then
+        echo "错误: NEBULA_SSH_REMOTE_SERVER 未设置。请先在 ~/.rebreath/.nebulaflow_vault 中配置。"
+        return 1
+    fi
+
+    ssh -i "$ssh_key" "${remote_server}" "mkdir -p ${remote_temp_path} && cd ${remote_temp_path} && $1"
 
     if [[ "$?" -ne 0 ]]; then
         echo "Download failed; check command and retry."
         return 1
     fi
 
-    scp -rv -i ~/.ssh/id_rsa ${remote_server}:${remote_temp_path}/* .
+    scp -rv -i "$ssh_key" "${remote_server}:${remote_temp_path}/*" .
 
     if [[ "$?" -ne 0 ]]; then
         echo "File copy failed; check remote paths."
         return 1
     fi
 
-    ssh -i ~/.ssh/id_rsa ${remote_server} "rm -rf ${remote_temp_path}/*"
+    ssh -i "$ssh_key" "${remote_server}" "rm -rf ${remote_temp_path}/*"
     echo "File downloaded successfully and temp cleaned."
 }
 
@@ -546,4 +560,4 @@ mycat(){
 
 
 # =============================================================================
-echo "NebulaFlow library loaded" 'O.<'
+#echo "NebulaFlow library loaded" 'O.<'
