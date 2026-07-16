@@ -13,3 +13,10 @@ logo/NebulaFlow.psd
 
 # 个人密钥配置
 .nebulaflow_vault
+.mioflow_vault
+
+# 旧版文件（NebulaFlow → MioFlow 迁移后遗留）
+NebulaFlowinstaller.sh
+rebreath-env-function
+rebreath-env-function.back
+.nebulaflow_vault.template

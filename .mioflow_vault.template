@@ -1,11 +1,11 @@
 # =============================================================================
-# NebulaFlow Vault — Template
-# 复制此文件为 ~/.rebreath/.nebulaflow_vault 并填入实际值
+# MioFlow Vault — Template
+# 复制此文件为 ~/.mio/.mioflow_vault 并填入实际值
 # 此文件不包含真实密钥，可安全提交到 GitHub
 # =============================================================================
 #
 # 各变量的作用域和服务函数如下。修改后需重新 source 生效：
-#   source ~/.rebreath/rebreath-env-function
+#   source ~/.mio/mio-env-function
 # =============================================================================
 
 
@@ -29,7 +29,7 @@ export NEBULA_MATERIALS_PROJECT_KEY=""
 
 # ---------------------------------------------------------------------------
 # 3. HTTP 代理服务器
-# 服务函数: use_agent (rebreath-env-function, Section 3)
+# 服务函数: use_agent (mio-env-function, Section 3)
 # 用途:     设置 http_proxy 环境变量，通过代理访问外网
 # ---------------------------------------------------------------------------
 export NEBULA_HTTP_PROXY=""
@@ -37,7 +37,7 @@ export NEBULA_HTTP_PROXY=""
 
 # ---------------------------------------------------------------------------
 # 4. 远程下载中转服务器
-# 服务函数: proxy_download (rebreath-env-function, Section 3)
+# 服务函数: proxy_download (mio-env-function, Section 3)
 # 用途:     SSH 到该服务器执行下载命令，再将文件 scp 回本地
 # 格式:     "<user>@<hostname_or_ip>"
 # 备注:     需配置 SSH 密钥登录
@@ -47,7 +47,7 @@ export NEBULA_SSH_REMOTE_SERVER=""
 
 # ---------------------------------------------------------------------------
 # 5. SSH 私钥路径（用于连接远程服务器）
-# 服务函数: proxy_download (rebreath-env-function, Section 3)
+# 服务函数: proxy_download (mio-env-function, Section 3)
 # 用途:     指定 SSH 连接时使用的私钥文件
 # ---------------------------------------------------------------------------
 export NEBULA_SSH_KEY_PATH="${HOME}/.ssh/id_rsa"
@@ -58,9 +58,6 @@ export NEBULA_SSH_KEY_PATH="${HOME}/.ssh/id_rsa"
 # 服务函数: compile_tex (envsrc/liveEnvFunction.sh)
 # 用途:     指定 pdflatex 和 bibtex 的完整路径（含 .exe）
 # 备注:     留空则自动搜索 PATH，WSL 用户需设置 Windows 路径
-#           常见路径示例（WSL 访问 Windows 程序）：
-#             NEBULA_PDFLATEX="/mnt/c/Program Files/MiKTeX/miktex/bin/x64/pdflatex.exe"
-#             NEBULA_BIBTEX="/mnt/c/Program Files/MiKTeX/miktex/bin/x64/bibtex.exe"
 # ---------------------------------------------------------------------------
 export NEBULA_PDFLATEX=""
 export NEBULA_BIBTEX=""
