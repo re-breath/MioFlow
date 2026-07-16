@@ -51,3 +51,16 @@ export NEBULA_SSH_REMOTE_SERVER=""
 # 用途:     指定 SSH 连接时使用的私钥文件
 # ---------------------------------------------------------------------------
 export NEBULA_SSH_KEY_PATH="${HOME}/.ssh/id_rsa"
+
+
+# ---------------------------------------------------------------------------
+# 6. LaTeX 编译器路径（Windows/MiKTeX 或其它发行版）
+# 服务函数: compile_tex (envsrc/liveEnvFunction.sh)
+# 用途:     指定 pdflatex 和 bibtex 的完整路径（含 .exe）
+# 备注:     留空则自动搜索 PATH，WSL 用户需设置 Windows 路径
+#           常见路径示例（WSL 访问 Windows 程序）：
+#             NEBULA_PDFLATEX="/mnt/c/Program Files/MiKTeX/miktex/bin/x64/pdflatex.exe"
+#             NEBULA_BIBTEX="/mnt/c/Program Files/MiKTeX/miktex/bin/x64/bibtex.exe"
+# ---------------------------------------------------------------------------
+export NEBULA_PDFLATEX=""
+export NEBULA_BIBTEX=""

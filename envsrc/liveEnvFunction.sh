@@ -727,3 +727,138 @@ except Exception as e:
 EOF
 }
 alias mapdist=get_map_distance
+
+
+# =============================================================================
+# SECTION 6: LaTeX Compilation / LaTeX 编译
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# Function: compile_tex
+# 功能: 编译 LaTeX 文档，自动完成 pdflatex + bibtex + pdflatex×2 标准流程。
+#       通过三次编译确保文献引用和交叉引用全部正确解析。
+# 场景: 撰写论文/报告时，一键完成 LaTeX 全流程编译。
+#       编译器路径按优先级：函数参数 > 环境变量 > PATH 中的系统命令。
+# Usage: compile_tex <tex_file>
+# Env:
+#   NEBULA_PDFLATEX    pdflatex 路径（可选，配置在 ~/.rebreath/.nebulaflow_vault）
+#   NEBULA_BIBTEX      bibtex 路径（可选，同上）
+# Example:
+#   compile_tex paper.tex
+#   NEBULA_PDFLATEX="/mnt/c/Program Files/MiKTeX/.../pdflatex.exe" compile_tex AlN.tex
+# ---------------------------------------------------------------------------
+compile_tex() {
+    local tex_file="${1:-main.tex}"
+    local base_name="${tex_file%.tex}"
+
+    # 检查 .tex 文件是否存在
+    if [[ ! -f "$tex_file" ]]; then
+        echo "❌ 文件不存在: $tex_file"
+        return 1
+    fi
+
+    # 编译器路径：环境变量(含 vault) > PATH
+    local pdflatex="${NEBULA_PDFLATEX:-pdflatex}"
+    local bibtex="${NEBULA_BIBTEX:-bibtex}"
+
+    # 检查编译器是否可用
+    if ! command -v "$pdflatex" &>/dev/null && [[ ! -x "$pdflatex" ]]; then
+        echo "❌ pdflatex 不可用: $pdflatex"
+        echo "   请在 ~/.rebreath/.nebulaflow_vault 中配置 NEBULA_PDFLATEX"
+        return 1
+    fi
+    if ! command -v "$bibtex" &>/dev/null && [[ ! -x "$bibtex" ]]; then
+        echo "❌ bibtex 不可用: $bibtex"
+        echo "   请在 ~/.rebreath/.nebulaflow_vault 中配置 NEBULA_BIBTEX"
+        return 1
+    fi
+
+    echo "=== 📄 编译: ${tex_file} ==="
+    echo "   pdflatex: $pdflatex"
+    echo "   bibtex:   $bibtex"
+    echo ""
+
+    # ---- pdflatex × 3 + bibtex ----
+    echo "=== 第1次 pdflatex（收集交叉引用）==="
+    "$pdflatex" -interaction=nonstopmode -synctex=1 "$tex_file" 2>&1 | grep -E "Error|Warning|Output written" || true
+
+    echo ""
+    echo "=== bibtex（处理文献引用）==="
+    if [[ -f "${base_name}.aux" ]]; then
+        "$bibtex" "$base_name" 2>&1 | tail -5 || true
+    else
+        echo "   ⚠️  未找到 .aux 文件，跳过 bibtex"
+    fi
+
+    echo ""
+    echo "=== 第2次 pdflatex（解析引用）==="
+    "$pdflatex" -interaction=nonstopmode -synctex=1 "$tex_file" 2>&1 | grep -E "Error|Warning|Output written" || true
+
+    echo ""
+    echo "=== 第3次 pdflatex（确保全部解析）==="
+    "$pdflatex" -interaction=nonstopmode -synctex=1 "$tex_file" 2>&1 | grep -E "Output written" || true
+
+    echo ""
+
+    # ---- 结果判断 ----
+    # 从 .log 文件中统计以 ! 开头的行（LaTeX 错误的标志）
+    local errors_total=0
+    if [[ -f "${base_name}.log" ]]; then
+        errors_total=$(grep -c '^!' "${base_name}.log" 2>/dev/null || echo 0)
+    fi
+
+    if [[ -f "${base_name}.pdf" ]]; then
+        if [[ $errors_total -gt 0 ]]; then
+            echo "⚠️  编译完成，但存在 ${errors_total} 个 LaTeX 错误！"
+            echo "   常见原因：Unicode 字符不支持、缺少宏包、语法错误等"
+            echo "   请查看上方输出的 ! LaTeX Error 信息，或检查 ${base_name}.log"
+            ls -lh "${base_name}.pdf"
+            return 1
+        else
+            echo "✅ 编译成功！"
+            ls -lh "${base_name}.pdf"
+        fi
+    else
+        echo "❌ 编译失败，未生成 PDF"
+        echo "   请检查 ${base_name}.log 中的详细信息"
+        return 1
+    fi
+}
+
+# ============================================================
+# fix_ppt_fonts — PPTX 字体批量替换
+# 中文 → CJK 字体（默认微软雅黑）
+# 英文 → Latin 字体（默认 Times New Roman ≈ 新罗马）
+# 原理：解压 PPTX → sed 替换 XML → 重打包，无需 Office
+# 用法：
+#   fix_ppt_fonts <input.pptx>
+#   fix_ppt_fonts <input.pptx> 微软雅黑 Times New Roman
+#   fix_ppt_fonts <input.pptx> 思源黑体 Arial
+# ============================================================
+fix_ppt_fonts() {
+    local input=${1:-}
+    local cjk_font=${2:-微软雅黑}
+    local latin_font=${3:-Times New Roman}
+    local script=$HOME/.rebreath/sh_lib/fix-ppt-fonts.sh
+
+    if [ -z "$input" ]; then
+        echo "❌ 请指定 PPTX 文件路径" >&2
+        echo "用法: fix_ppt_fonts <input.pptx> [中文字体] [英文字体]" >&2
+        echo "  例: fix_ppt_fonts test.pptx" >&2
+        echo "  例: fix_ppt_fonts test.pptx 思源黑体 Arial" >&2
+        return 1
+    fi
+
+    if [ ! -f "$input" ]; then
+        echo "❌ 文件不存在: $input" >&2
+        return 1
+    fi
+
+    if [ ! -f "$script" ]; then
+        echo "❌ 脚本文件缺失: $script" >&2
+        echo "请检查 NebulaFlow 是否完整安装" >&2
+        return 1
+    fi
+
+    bash "$script" -i "$input" -c "$cjk_font" -l "$latin_font"
+}
