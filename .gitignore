@@ -15,6 +15,13 @@ logo/NebulaFlow.psd
 .nebulaflow_vault
 .mioflow_vault
 
+# Python 缓存
+__pycache__/
+*.pyc
+
+# pip 安装信息
+*.egg-info/
+
 # 旧版文件（NebulaFlow → MioFlow 迁移后遗留）
 NebulaFlowinstaller.sh
 rebreath-env-function

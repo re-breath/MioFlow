@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mioflow"
+version = "0.1.0"
+description = "澪の工具箱 — 科学计算 CLI 工具集 (MD/DFT/数据分析)"
+authors = [
+    {name = "rebreath", email = "dev@mioflow.dev"},
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.21",
+]
+
+[project.scripts]
+mio = "mioflow.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["mioflow*"]
+
+[tool.setuptools.package-data]
+mioflow = ["*.py"]

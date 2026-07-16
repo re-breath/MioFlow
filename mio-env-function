@@ -28,7 +28,7 @@ alias modenv='vim ~/.bashrc'
 alias py='python3'
 alias modrenv='vim ~/.mio/mio-env-function'
 
-export PYTHONPATH=$PYTHONPATH:$HOME/.mio/mioflow
+export PYTHONPATH=$PYTHONPATH:$HOME/.mio/mioflow:$HOME/.mio
 export OMPI_MCA_btl_base_warn_component_unused=0
 
 while IFS= read -r -d '' file; do
