@@ -142,5 +142,5 @@ EOF
 check_directory_name
 check_variable_and_process_data
 #replot stress_strain_curve.txt
-cp ~/.rebreath/plot_library/plot_stress_strain_curve.py .
+cp ~/.mio/plot_library/plot_stress_strain_curve.py .
 python3 plot_stress_strain_curve.py

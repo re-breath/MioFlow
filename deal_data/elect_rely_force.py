@@ -22,7 +22,7 @@ NEP训练集 — 按原子受力筛选构型 / Filter training set by atomic for
   # 输出: force_fited.xyz (合理构型), force_unfited.xyz (异常构型), force_distribution.png
 
 依赖 / Dependencies:
-  - nebula (NebulaFlow自研库)
+  - nebula (MioFlow (原NebulaFlow) 自研库)
   - numpy, matplotlib, ase
 
 Author: rebreath

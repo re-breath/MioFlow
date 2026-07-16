@@ -25,7 +25,7 @@ if [ -n "$pertu_poscar" ];then
 else
     poscarfile=POSCAR
 fi
-library_address=${library_address:=~/.rebreath/auto/auto_vasp_nep1}
+library_address=${library_address:=~/.mio/auto/auto_vasp_nep1}
 check_vasp_complete() {
   if [ ! -f  "OUTCAR" ];then
     echo "当前目录下没有找到OUTCAR文件，正在生成..."

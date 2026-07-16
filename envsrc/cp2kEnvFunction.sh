@@ -1,6 +1,6 @@
 # ======================================================================
 # File:         cp2kEnvFunction.sh
-# Project:      NebulaFlow
+# Project:      MioFlow (原 NebulaFlow)
 # Description:  CP2K计算相关函数库 — restart转换、能量提取、任务提交
 #               CP2K restart file conversion, energy extraction, job submission.
 # Author:       rebreath

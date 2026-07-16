@@ -1,7 +1,7 @@
 #!/bin/bash
 # 该脚本使用来完成vasp的三个阶段的结构优化，并且进行单点能的计算
 
-source ~/.rebreath/rebreath-env-function
+source ~/.mio/mio-env-function
 
 
 vaspstart_geo_optstage1(){

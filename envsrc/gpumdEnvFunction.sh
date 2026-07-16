@@ -1,6 +1,6 @@
 # ======================================================================
 # File:         gpumdEnvFunction.sh
-# Project:      NebulaFlow
+# Project:      MioFlow (原 NebulaFlow)
 # Description:  GPUMD/NEP训练/热导率相关函数库
 #               Functions for GPUMD simulation, NEP potential training,
 #               HNEMD thermal conductivity, elastic moduli, and phonon.
@@ -25,7 +25,7 @@
 #   # 筛选train.xyz中每个原子受力在[-10, 10] eV/A范围内的构型
 # ---------------------------------------------------------------------------
 screening_reasonable_forces(){
-    local deal_lib="$HOME/.rebreath/deal_data/"
+    local deal_lib="$HOME/.mio/deal_data/"
     python3 $deal_lib/elect_rely_force.py $1  $2  $3
 }
 
@@ -42,7 +42,7 @@ screening_reasonable_forces(){
 #   # 筛选train.xyz中总能量在[-800, -780] eV范围内的构型
 # ---------------------------------------------------------------------------
 screening_reasonable_energy(){
-    local deal_lib="$HOME/.rebreath/deal_data/"
+    local deal_lib="$HOME/.mio/deal_data/"
     python3 $deal_lib/elect_rely_energy.py $1  $2  $3
 }
 
@@ -59,7 +59,7 @@ screening_reasonable_energy(){
 #   # 筛选train.xyz中位力在[-100, 100] eV范围内的构型
 # ---------------------------------------------------------------------------
 screening_reasonable_virial(){
-    local deal_lib="$HOME/.rebreath/deal_data/"
+    local deal_lib="$HOME/.mio/deal_data/"
     python3 $deal_lib/elect_rely_virial.py $1  $2  $3
 }
 
@@ -79,7 +79,7 @@ screening_reasonable_virial(){
 #   plot_nep
 # ---------------------------------------------------------------------------
 plot_nep(){
-    python3 ~/.rebreath/plot_library/hplt_nep_results.py
+    python3 ~/.mio/plot_library/hplt_nep_results.py
 }
 
 
@@ -94,7 +94,7 @@ plot_nep(){
 #   plot_ultimate_nep
 # ---------------------------------------------------------------------------
 plot_ultimate_nep(){
-    cp $HOME/.rebreath/plot_library/plot_nep_results_ultimate.py .
+    cp $HOME/.mio/plot_library/plot_nep_results_ultimate.py .
     python3 plot_nep_results_ultimate.py
     rm -f plot_nep_results_ultimate.py
 }
@@ -225,7 +225,7 @@ start_mul_hnemd_shuguang() {
 #   plot_hnemd
 # ---------------------------------------------------------------------------
 plot_hnemd(){
-    lib_address="$HOME/.rebreath/plot_library/"
+    lib_address="$HOME/.mio/plot_library/"
 
     find $PWD -type f -regex '.*kappa.out' | while read -r file;do
       local hnemd_direct=0
@@ -255,7 +255,7 @@ plot_hnemd(){
 #   plot_hnemd_para /path/to/simulations
 # ---------------------------------------------------------------------------
 plot_hnemd_para() {
-  local lib_address="$HOME/.rebreath/plot_library"
+  local lib_address="$HOME/.mio/plot_library"
   local root="${1:-$PWD}"
 
   local total load1 used free jobs
@@ -309,7 +309,7 @@ plot_hnemd_para() {
 #   plot_mul_hnemd
 # ---------------------------------------------------------------------------
 plot_mul_hnemd(){
-    local lib_address="$HOME/.rebreath/plot_library/"
+    local lib_address="$HOME/.mio/plot_library/"
     local hnemd_direct=0
     local kappa_num=$(find $PWD -type f -regex '.*kappa_[0-9]+.out' |wc -l)
     find $PWD -type d -regex '.*average_hnemd/kappa' | while read -r workdir;do
@@ -342,7 +342,7 @@ plot_mul_hnemd(){
 # Usage: deal_hnemd_data
 # ---------------------------------------------------------------------------
 deal_hnemd_data(){
-    local lib_address="$HOME/.rebreath/deal_data/"
+    local lib_address="$HOME/.mio/deal_data/"
     source ${lib_address}/deal_hnemd_data.sh
     plot_mul_hnemd
 }
@@ -395,10 +395,10 @@ get_hnemd_data(){
 # Example:
 #   deal_strain_fluctuation_to_elastic 1200
 #   # 从当前目录的thermo.out计算1200K下的弹性模量，输出到elastics.txt
-# Dependencies: $HOME/.rebreath/deal_data/deal_strain_fluctuation.sh
+# Dependencies: $HOME/.mio/deal_data/deal_strain_fluctuation.sh
 # ---------------------------------------------------------------------------
 deal_strain_fluctuation_to_elastic(){
-    cp ~/.rebreath/deal_data/deal_strain_fluctuation.sh .
+    cp ~/.mio/deal_data/deal_strain_fluctuation.sh .
     bash deal_strain_fluctuation.sh $1 > elastics.txt
     rm -f deal_strain_fluctuation.sh
     cat elastics.txt
@@ -471,7 +471,7 @@ verify_gpumd_result(){
 
 # ---------------------------------------------------------------------------
 # Function: start_gpumd
-# 功能: 根据配置文件(~/.rebreath/.config)自动选择GPUMD启动方式
+# 功能: 根据配置文件(~/.mio/.config)自动选择GPUMD启动方式
 #       支持普通GPU(gpumd)和DCU加速器(gpumdstart_dcu)两种模式。
 # 场景: 在不同计算平台上使用统一的命令启动GPUMD，无需手动切换。
 #       配置文件中设置gpumd_exe决定启动方式。
@@ -487,7 +487,7 @@ start_gpumd(){
         dcu_num=${1:-1}
         gpumdstart_dcu -n $dcu_num
     else
-        echo "Error: Unknown gpumd startup method. Check ~/.rebreath/.config"
+        echo "Error: Unknown gpumd startup method. Check ~/.mio/.config"
         exit 521
     fi
 }
@@ -509,7 +509,7 @@ start_gpumd(){
 # Dependencies: numpy, matplotlib, ase, scikit-learn
 # ---------------------------------------------------------------------------
 check_dataset_quality(){
-    python3 $HOME/.rebreath/deal_data/dataset_quality_diagnosis.py $@
+    python3 $HOME/.mio/deal_data/dataset_quality_diagnosis.py $@
     echo "Dataset quality check complete"
 }
 
@@ -822,7 +822,7 @@ PY
 # Dependencies: calorine (pip install calorine)
 # ---------------------------------------------------------------------------
 compute_elastic_moduli(){
-    local compute_lib=$HOME/.rebreath/compute_lib
+    local compute_lib=$HOME/.mio/compute_lib
     local nep_file=${1:-nep.txt}
     sed "s/nepfile/$nep_file/g" $compute_lib/calorine_compute_elastic.py > calorine_compute_elastic.py
     python3 calorine_compute_elastic.py > elastic_calorine.txt
@@ -843,7 +843,7 @@ compute_elastic_moduli(){
 # Dependencies: phonopy, gpumd_compute_phonon_spectrum.py
 # ---------------------------------------------------------------------------
 compute_phonon_spectrum() {
-  local script="$HOME/.rebreath/compute_lib/gpumd_compute_phonon_spectrum.py"
+  local script="$HOME/.mio/compute_lib/gpumd_compute_phonon_spectrum.py"
   python3 - < "$script"
 }
 
@@ -1072,7 +1072,7 @@ deal_outcar_to_train(){
 #   # 输出应力-应变数据和曲线图
 # ---------------------------------------------------------------------------
 plot_stress_strain_curve(){
-    source $HOME/.rebreath/plot_library/stress_strain_curve.sh
+    source $HOME/.mio/plot_library/stress_strain_curve.sh
 }
 
 
@@ -1086,7 +1086,7 @@ plot_stress_strain_curve(){
 #   plot_mul_stress_strain_curve
 # ---------------------------------------------------------------------------
 plot_mul_stress_strain_curve(){
-    source $HOME/.rebreath/plot_library/auto_plot_xyz_strain_stress_curve.sh
+    source $HOME/.mio/plot_library/auto_plot_xyz_strain_stress_curve.sh
 }
 
 

@@ -1,5 +1,5 @@
 """
-NebulaFlow Python 核心库 — xyz 构型数据读写
+MioFlow Python 核心库 (原 NebulaFlow) — xyz 构型数据读写
 ==============================================
 专门处理 GPUMD 风格的 extended xyz 格式构型数据，建立原子构型对象（Config）。
 提供高效的读取、写入、统计和信息提取功能。

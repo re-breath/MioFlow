@@ -1,6 +1,6 @@
 # ======================================================================
 # File:         vaspEnvFunction.sh
-# Project:      NebulaFlow
+# Project:      MioFlow (原 NebulaFlow)
 # Description:  VASP计算相关函数库 — SLURM提交、POTCAR管理、声子谱、弹性模量
 #               VASP job submission, POTCAR/k-points management, and phonon.
 # Author:       rebreath

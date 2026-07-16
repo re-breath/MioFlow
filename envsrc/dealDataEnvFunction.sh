@@ -1,6 +1,6 @@
 # ======================================================================
 # File:         dealDataEnvFunction.sh
-# Project:      NebulaFlow
+# Project:      MioFlow (原 NebulaFlow)
 # Description:  通用数据处理函数库 — 数据筛选/统计分析/模型分析/格式转换等
 #               General data processing: filtering, statistics, model analysis,
 #               file format conversion, structure manipulation, and more.
@@ -176,7 +176,7 @@ EOF
 #   # 输出: average_ther.out
 # ---------------------------------------------------------------------------
 average_file(){
-    local cpplib="$HOME/.rebreath/cpp_lib"
+    local cpplib="$HOME/.mio/cpp_lib"
     first_file="$1"
     avg_name=${1:0:4}
     g++ $cpplib/averagefiles.cpp -o average_file
@@ -226,7 +226,7 @@ average_file_s(){
 # Usage: average_file_c <file1> <file2> [file3...]
 # ---------------------------------------------------------------------------
 average_file_c(){
-    local cpplib="$HOME/.rebreath/cpp_lib"
+    local cpplib="$HOME/.mio/cpp_lib"
     first_file="$1"
     avg_name=${1:0:4}
     g++ $cpplib/averagefiles.cpp -o average_file
@@ -411,7 +411,7 @@ select_every_nth_config(filename, nth)
 #   analyze_xyz train.xyz
 # ---------------------------------------------------------------------------
 analyze_xyz(){
-    cp $HOME/.rebreath/deal_data/analyze_xyz_detail.py .
+    cp $HOME/.mio/deal_data/analyze_xyz_detail.py .
     python3 analyze_xyz_detail.py $1
 }
 
@@ -524,7 +524,7 @@ supercell_auto_cubic() {
     if [ "$#" -ne 2 ]; then
         echo "Usage: supercell_auto_cubic <xyzfile> <targetnumber>"; return 1
     fi
-    exec 3< "$HOME/.rebreath/deal_data/supercell_auto_cubic.py"
+    exec 3< "$HOME/.mio/deal_data/supercell_auto_cubic.py"
     python3 /dev/fd/3 -- "$xyzfile" "$targetnumber"
     exec 3<&-
 }
@@ -926,7 +926,7 @@ analyze_crystallinity_fraction() {
     local itype="$1"; local argfile="$2"; local rmse_cutoff="${3:-0.1}"
     # (Implementation preserved - function body ~100 lines of OVITO python)
     # See the full implementation at:
-    #   ~/.rebreath/envsrc/dealDataEnvFunction.sh
+    #   ~/.mio/envsrc/dealDataEnvFunction.sh
     # This function uses ovito PolyhedralTemplateMatchingModifier to compute
     # the fraction of atoms identified as a specific crystal type per frame.
 
@@ -1316,9 +1316,9 @@ EOF
      1 - NRCFLAG; 0 - WFLAG; 1.5406 - LAMBDA; 1 - UNITFLAG; 1 - AFACTORFLAG
 EOF
     xrd
-    cp ~/.rebreath/plot_library/plot_rdf_xrd.py ./
+    cp ~/.mio/plot_library/plot_rdf_xrd.py ./
     python3 plot_rdf_xrd.py
-    cp ~/.rebreath/deal_data/xrdtreatment.py ./
+    cp ~/.mio/deal_data/xrdtreatment.py ./
     python3 xrdtreatment.py
     awk '{print $6,$7,$8}' rings_size_distribution.dat
 }
@@ -1331,7 +1331,7 @@ EOF
 # Status: DEPRECATED
 # ---------------------------------------------------------------------------
 calc_cf_spatoms(){
-    python3 ~/.rebreath/deal_data/compute_carbon_fiber_spatoms.py "$@"
+    python3 ~/.mio/deal_data/compute_carbon_fiber_spatoms.py "$@"
 }
 
 
@@ -1395,7 +1395,7 @@ cp_file_to_subdirs(){
 xyz_group_by_type(){
     local xyzfile=${1}
     if [ -z "$xyzfile" ]; then echo "Usage: xyz_group_by_type <xyzfile>"; return 1; fi
-    exec 3< "$HOME/.rebreath/deal_data/grouping_use_atomtype.py"
+    exec 3< "$HOME/.mio/deal_data/grouping_use_atomtype.py"
     python3 /dev/fd/3 -- "$xyzfile"
     exec 3<&-
 }
@@ -1410,7 +1410,7 @@ xyz_group_by_type(){
 #   # 按z方向将原子按1:1.2:3的比例分为3组
 # ---------------------------------------------------------------------------
 grouping_to_xyz(){
-    python3 ~/.rebreath/deal_data/regrouping.py "$@"
+    python3 ~/.mio/deal_data/regrouping.py "$@"
 }
 
 
@@ -1478,7 +1478,7 @@ generate_large_primes() {
 visualize_thermo() {
     local thermo_file="$1"
     if [ -z "$thermo_file" ]; then echo "Usage: visualize_thermo <thermo_file>"; return 1; fi
-    python3 $HOME/.rebreath/deal_data/visualize_thermo.py --input $thermo_file
+    python3 $HOME/.mio/deal_data/visualize_thermo.py --input $thermo_file
 }
 
 # ---------------------------------------------------------------------------
@@ -1492,8 +1492,8 @@ visualize_thermo() {
 get_phonon_spectrum_mpdata(){
     local mpid=${1}; local method=${2:-dfpt}
     if [ -z "$mpid" ]; then echo "Usage: get_phonon_spectrum_mpdata <mpid>"; return 1; fi
-    cp $HOME/.rebreath/compute_lib/mp_phonon_data_extract.py .
+    cp $HOME/.mio/compute_lib/mp_phonon_data_extract.py .
     python3 mp_phonon_data_extract.py $mpid $method
-    cp $HOME/.rebreath/compute_lib/plot_phonon_spectrum_mpdata.py .
+    cp $HOME/.mio/compute_lib/plot_phonon_spectrum_mpdata.py .
     python3 plot_phonon_spectrum_mpdata.py ${mpid}_phonon_bs_${method}.json
 }

@@ -38,7 +38,7 @@ ${BOLD}参数：${RESET}
 ${BOLD}选项：${RESET}
   -j, --jobs N      并行任务数（默认：自动检测 CPU 核数）
   -d, --search-dir  搜索根目录（默认：当前目录）
-  -s, --source      额外 source 的脚本（默认已包含 ~/.rebreath/rebreath-function）
+  -s, --source      额外 source 的脚本（默认已包含 ~/.mio/mio-env-function）
   -n, --dry-run     只打印将要执行的命令，不实际运行
   -q, --quiet       不打印每个任务的输出（只显示进度）
   -h, --help        显示此帮助
@@ -161,8 +161,8 @@ run_one() {
     local log
     log=$(bash --login -c "
         # source 个人函数库（忽略不存在的情况）
-        [[ -f \"\$HOME/.rebreath/rebreath-function\" ]] && \
-            source \"\$HOME/.rebreath/rebreath-function\" 2>/dev/null || true
+        [[ -f \"\$HOME/.mio/mio-env-function\" ]] && \
+            source \"\$HOME/.mio/mio-env-function\" 2>/dev/null || true
         # source 额外脚本
         [[ -n '${extra_src}' && -f '${extra_src}' ]] && \
             source '${extra_src}' 2>/dev/null || true

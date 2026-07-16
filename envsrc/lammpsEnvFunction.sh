@@ -1,6 +1,6 @@
 # ======================================================================
 # File:         lammpsEnvFunction.sh
-# Project:      NebulaFlow
+# Project:      MioFlow (原 NebulaFlow)
 # Description:  LAMMPS模拟相关函数库 — data/setting合并、移位、排序、任务提交
 #               LAMMPS data/settings merging, shifting, sorting, job submission.
 # Author:       rebreath
@@ -99,6 +99,6 @@ EOF
 # ---------------------------------------------------------------------------
 sortlmpdata(){
     local in_file="$1"; local out_file="${in_file%.*}_sort.data"
-    cp ~/.rebreath/deal_data/sortlmpdata.py .
+    cp ~/.mio/deal_data/sortlmpdata.py .
     python3 sortlmpdata.py $in_file $out_file
 }

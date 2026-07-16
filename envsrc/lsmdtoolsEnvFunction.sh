@@ -1,6 +1,6 @@
 # ======================================================================
 # File:         lsmdtoolsEnvFunction.sh
-# Project:      NebulaFlow
+# Project:      MioFlow (原 NebulaFlow)
 # Description:  自研LSMD软件测试函数库 — 力场各分量独立验证
 #               Testing functions for the LSMD in-house MD software.
 #               Tests each force component (bond/angle/dihedral/pair) independently.
@@ -25,7 +25,7 @@ testlmpmod(){
     mkdir -p ~/.comparewithlmp/lmptest
     rm -f ~/.comparewithlmp/* || true
     cp ${lmpmodelfile} ~/.comparewithlmp/lmptest
-    cp ~/.rebreath/inp_lib/Lammps/testall.inp ~/.comparewithlmp/lmptest
+    cp ~/.mio/inp_lib/Lammps/testall.inp ~/.comparewithlmp/lmptest
     sed -E -i '/^[[:space:]]*read_data/s/.*/read_data   '"${lsmdmodelfile}"'/' ~/.comparewithlmp/lmptest/testall.inp
     conda activate deepmd || true
     cd ~/.comparewithlmp/lmptest/
@@ -36,7 +36,7 @@ testlmpmod(){
 
 testlmpdir(){
     lmpmodelfile=${1}; lmptemplate=${2:-300}; lmpmodelfile_address=$PWD
-    cp ~/.rebreath/inp_lib/Lammps/testall.inp .
+    cp ~/.mio/inp_lib/Lammps/testall.inp .
     sed -E -i '/^[[:space:]]*read_data/s/.*/read_data   '"${lsmdmodelfile}"'/' testall.inp
     sed -E -i '/^([[:space:]]*)velocity all create/s~.*~\1velocity all create '"${lmptemplate}"' 12345 mom yes rot yes dist gaussian~' testall.inp
     conda activate deepmd || true

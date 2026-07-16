@@ -619,7 +619,7 @@ get_map_distance() {
 
     if [ -z "$AMAP_KEY" ]; then
         echo "错误: NEBULA_AMAP_KEY 未设置。"
-        echo "请先在 ~/.rebreath/.nebulaflow_vault 中配置高德地图 API Key"
+        echo "请先在 ~/.mio/.mioflow_vault 中配置高德地图 API Key"
         return 1
     fi
 
@@ -741,7 +741,7 @@ alias mapdist=get_map_distance
 #       编译器路径按优先级：函数参数 > 环境变量 > PATH 中的系统命令。
 # Usage: compile_tex <tex_file>
 # Env:
-#   NEBULA_PDFLATEX    pdflatex 路径（可选，配置在 ~/.rebreath/.nebulaflow_vault）
+#   NEBULA_PDFLATEX    pdflatex 路径（可选，配置在 ~/.mio/.mioflow_vault）
 #   NEBULA_BIBTEX      bibtex 路径（可选，同上）
 # Example:
 #   compile_tex paper.tex
@@ -764,12 +764,12 @@ compile_tex() {
     # 检查编译器是否可用
     if ! command -v "$pdflatex" &>/dev/null && [[ ! -x "$pdflatex" ]]; then
         echo "❌ pdflatex 不可用: $pdflatex"
-        echo "   请在 ~/.rebreath/.nebulaflow_vault 中配置 NEBULA_PDFLATEX"
+        echo "   请在 ~/.mio/.mioflow_vault 中配置 NEBULA_PDFLATEX"
         return 1
     fi
     if ! command -v "$bibtex" &>/dev/null && [[ ! -x "$bibtex" ]]; then
         echo "❌ bibtex 不可用: $bibtex"
-        echo "   请在 ~/.rebreath/.nebulaflow_vault 中配置 NEBULA_BIBTEX"
+        echo "   请在 ~/.mio/.mioflow_vault 中配置 NEBULA_BIBTEX"
         return 1
     fi
 
@@ -839,7 +839,7 @@ fix_ppt_fonts() {
     local input=${1:-}
     local cjk_font=${2:-微软雅黑}
     local latin_font=${3:-Times New Roman}
-    local script=$HOME/.rebreath/sh_lib/fix-ppt-fonts.sh
+    local script=$HOME/.mio/sh_lib/fix-ppt-fonts.sh
 
     if [ -z "$input" ]; then
         echo "❌ 请指定 PPTX 文件路径" >&2
@@ -856,7 +856,7 @@ fix_ppt_fonts() {
 
     if [ ! -f "$script" ]; then
         echo "❌ 脚本文件缺失: $script" >&2
-        echo "请检查 NebulaFlow 是否完整安装" >&2
+        echo "请检查 MioFlow 是否完整安装" >&2
         return 1
     fi
 

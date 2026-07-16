@@ -47,7 +47,7 @@ else
   rm -r elect
   mkdir elect
 fi
-cp ~/.rebreath/auto/modify_nep/get_max_rmse_xyz.py elect/
+cp ~/.mio/auto/modify_nep/get_max_rmse_xyz.py elect/
 cp $init_address/train.xyz elect/train_md.xyz
 cp ../test.xyz elect/test.xyz
 cp ../train.xyz elect/train.xyz

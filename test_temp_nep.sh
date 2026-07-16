@@ -4,7 +4,7 @@ nepfile_name=${nepfile%.*}
 
 
 compute_elastic_moduli(){
-    compute_lib=/home/dhk/.rebreath/compute_lib
+    compute_lib=/home/dhk/.mio/compute_lib
     sed "s/nepfile/$1/g" $compute_lib/calorine_compute_elastic.py > calorine_compute_elastic.py
     python3 calorine_compute_elastic.py > elastic_calorine.txt
     rm -f calorine_compute_elastic.py 

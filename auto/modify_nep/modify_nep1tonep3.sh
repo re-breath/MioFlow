@@ -5,7 +5,7 @@
 set -e
 
 
-lib_address=~/.rebreath/auto/modify_nep
+lib_address=~/.mio/auto/modify_nep
 group_size=66 #原子个数加二
 core_num=1
 incar_single_energy='INCAR_single_point_energy'

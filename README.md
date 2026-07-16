@@ -94,7 +94,7 @@ source ~/.bashrc
 # If you see "NebulaFlow library loaded O.<", you're all set!
 
 # 2. 配置计算软件路径 / Configure executable paths
-vim ~/.rebreath/.config
+vim ~/.mio/.config
 # 设置 gpumd_exe, vasp_exe 等路径 / Set paths for gpumd_exe, vasp_exe, etc.
 
 # 3. 开始使用 / Start using
@@ -143,7 +143,7 @@ update_NebulaFlow   # 自动从 GitHub 拉取最新代码并重新安装
 On Windows-to-Linux environments (e.g. Git Bash → WSL), format issues may cause errors. Fix with:
 
 ```bash
-dos2unix ~/.rebreath/*
+dos2unix ~/.mio/*
 ```
 
 > **建议 / Recommendation**: 在 **WSL** 中使用 NebulaFlow 以获得最佳体验。

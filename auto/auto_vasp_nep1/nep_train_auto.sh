@@ -20,7 +20,7 @@ if [ -n "$library_address" ]
 then
     library_address=$library_address
 else
-    library_address=~/.rebreath/auto/datesets_Construction/auto_vasp_set
+    library_address=~/.mio/auto/datesets_Construction/auto_vasp_set
 fi
 mkdir -p $init_address/nep_train
 cp $init_address/train.xyz $init_address/nep_train/test.xyz

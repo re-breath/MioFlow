@@ -14,7 +14,7 @@ deform_cell_num=0.998   #该参数为phonopy扩胞后再对其扩胞后的POSCAR
 #-------------------------------------------------------
 set e
 init_address=$PWD
-library_address='/$HOME/.rebreath/auto/phono_specturm_vasp'
+library_address='/$HOME/.mio/auto/phono_specturm_vasp'
 incarfiles="INCAR INCAR-new band.conf"
 for i in $incarfiles
 do

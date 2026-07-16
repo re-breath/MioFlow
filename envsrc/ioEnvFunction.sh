@@ -1,6 +1,6 @@
 # ======================================================================
 # File:         ioEnvFunction.sh
-# Project:      NebulaFlow
+# Project:      MioFlow (原 NebulaFlow)
 # Description:  文件格式转换函数库 — xyz/POSCAR/data/cif/pdb 互转
 #               File format conversion: xyz, POSCAR, LAMMPS data, cif, pdb.
 # Author:       rebreath
@@ -47,7 +47,7 @@ PY
 # ---------------------------------------------------------------------------
 # Function: tran_data2xyz
 # 功能: 将LAMMPS data文件转换为xyz格式
-# 场景: 使用LAMMPS建模后用NebulaFlow/GPUMD进行处理时需要转换格式。
+# 场景: 使用LAMMPS建模后用MioFlow/GPUMD进行处理时需要转换格式。
 # Usage: tran_data2xyz <file.data> [output.xyz] [atom_style]
 # Example:
 #   tran_data2xyz system.data model.xyz atomic

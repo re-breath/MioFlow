@@ -12,7 +12,7 @@ import argparse
 
 API_KEY = os.environ.get("NEBULA_MATERIALS_PROJECT_KEY", "")
 if not API_KEY:
-    print("Error: NEBULA_MATERIALS_PROJECT_KEY not set. 请先 source ~/.rebreath/.nebulaflow_vault")
+    print("Error: NEBULA_MATERIALS_PROJECT_KEY not set. 请先 source ~/.mio/.mioflow_vault")
     sys.exit(1)
 
 #mpid = "mp-2741"

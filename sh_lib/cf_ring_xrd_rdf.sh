@@ -63,9 +63,9 @@ EOF
     sed "2c\\$new_line" opted_back > $argfile
 
     xrd
-    cp ~/.rebreath/plot_library/plot_rdf_xrd.py ./
+    cp ~/.mio/plot_library/plot_rdf_xrd.py ./
     python3 plot_rdf_xrd.py 
-    cp ~/.rebreath/deal_data/xrdtreatment.py ./
+    cp ~/.mio/deal_data/xrdtreatment.py ./
     python3 xrdtreatment.py 
 
     # 打印5，6，7圆环原子数量 rings_size_distribution.dat

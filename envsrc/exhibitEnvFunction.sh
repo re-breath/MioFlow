@@ -1,6 +1,6 @@
 # ======================================================================
 # File:         exhibitEnvFunction.sh
-# Project:      NebulaFlow
+# Project:      MioFlow (原 NebulaFlow)
 # Description:  OVITO 科研可视化函数库 — 差分电荷密度 / 轨迹 GIF / 碳纤维渲染
 #               Scientific visualization with OVITO: differential charge
 #               density maps, trajectory-to-GIF, and carbon fiber rendering.
@@ -9,7 +9,7 @@
 # ======================================================================
 
 
-_EXHIBIT_LIB="$HOME/.rebreath/exhibit_lib"
+_EXHIBIT_LIB="$HOME/.mio/exhibit_lib"
 
 
 # =============================================================================
@@ -47,7 +47,7 @@ exhibit_diff_charge() {
 
     if [[ ! -f "$script_path" ]]; then
         echo "❌ 未找到渲染脚本: $script_path"
-        echo "   请检查 NebulaFlow/exhibit_lib/ 路径"
+        echo "   请检查 MioFlow/exhibit_lib/ 路径"
         return 1
     fi
 
@@ -102,7 +102,7 @@ exhibit_traj_gif() {
 
     if [[ ! -f "$script_path" ]]; then
         echo "❌ 未找到渲染脚本: $script_path"
-        echo "   请检查 NebulaFlow/exhibit_lib/ 路径"
+        echo "   请检查 MioFlow/exhibit_lib/ 路径"
         return 1
     fi
 
@@ -188,7 +188,7 @@ exhibit_cf_render() {
 
     if [[ ! -f "$script_path" ]]; then
         echo "❌ 未找到渲染脚本: $script_path"
-        echo "   请检查 NebulaFlow/exhibit_lib/ 路径"
+        echo "   请检查 MioFlow/exhibit_lib/ 路径"
         return 1
     fi
 

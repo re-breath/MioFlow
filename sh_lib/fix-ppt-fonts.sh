@@ -10,7 +10,7 @@
 #   ./fix-ppt-fonts.sh -i presentation.pptx
 #   ./fix-ppt-fonts.sh -i in.pptx -o out.pptx -c "思源黑体" -l "Arial"
 #
-# 适用于 NebulaFlow / WSL / Git Bash / Linux / macOS
+# 适用于 MioFlow / WSL / Git Bash / Linux / macOS
 # ==============================================================================
 
 set -euo pipefail
