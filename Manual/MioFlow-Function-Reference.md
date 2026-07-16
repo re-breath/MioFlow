@@ -1,4 +1,4 @@
-# NebulaFlow 函数参考手册
+# MioFlow 函数参考手册（原 NebulaFlow）
 
 > **版本**: 2026-06-28 | **作者**: rebreath | **总函数数**: ~270+
 >
@@ -946,30 +946,30 @@
 
 # 13. GPU 任务调度 & 超算集群
 
-**源文件**: [rebreath-env-function](../rebreath-env-function) (§6-7) + `envsrc/tempEnvFunction.sh`
+**源文件**: [mio-env-function](../mio-env-function) (§6-7) + `envsrc/tempEnvFunction.sh`
 
 ## 13.1 GPU 自动调度
 
 ### free_gpu_run()
-- **文件**: `rebreath-env-function:334`
+- **文件**: `mio-env-function:334`
 - **功能**: 轮询 GPU，在第一个空闲 GPU 上运行命令（文件锁安全）
 - **用法**: `free_gpu_run <pid_var> <command>`
 - **说明**: 环境变量: GPU_FREE_MEM_THRESHOLD_MB(500), GPU_FREE_UTIL_THRESHOLD(10), GPU_WAIT_INTERVAL(20)；flock 防冲突
 
 ### free_time_run()
-- **文件**: `rebreath-env-function:400`
+- **文件**: `mio-env-function:400`
 - **功能**: 轮询 GPU 直到有 <200MB 使用的卡，执行命令
 - **用法**: `free_time_run 'nohup gpumd 2>&1 &'`
 - **说明**: 简化版，无锁；日志 run_train-file.log
 
 ### wait_and_run()
-- **文件**: `rebreath-env-function:301`
+- **文件**: `mio-env-function:301`
 - **功能**: 等待 PID 结束后在空闲 GPU 执行后续命令
 - **用法**: `wait_and_run <PID> "command" [interval]`
 - **说明**: 默认间隔 60s
 
 ### pfrun()
-- **文件**: `rebreath-env-function:443`
+- **文件**: `mio-env-function:443`
 - **功能**: 并行查找文件并在每个所在目录执行命令
 - **用法**: `pfrun <file_pattern> <command> [--jobs N] [--dry-run] [--quiet]`
 - **说明**: 委托 parallel_find_run.sh
@@ -977,12 +977,12 @@
 ## 13.2 进程管理
 
 ### find_nohup_task()
-- **文件**: `rebreath-env-function:277`
+- **文件**: `mio-env-function:277`
 - **功能**: 查找 nohup 后台进程
 - **用法**: `find_nohup_task "gpumd"`
 
 ### pwdxcd()
-- **文件**: `rebreath-env-function:284`
+- **文件**: `mio-env-function:284`
 - **功能**: cd 到指定 PID 的工作目录
 - **用法**: `pwdxcd <PID>`
 
@@ -1184,22 +1184,22 @@
 
 # 17. 核心工具函数
 
-**源文件**: [rebreath-env-function](../rebreath-env-function) (549行)
+**源文件**: [mio-env-function](../mio-env-function) (549行)
 
 ## 17.1 库管理
 
 ### loadrenv()
-- **文件**: `rebreath-env-function:38`
-- **功能**: 重新加载 NebulaFlow 环境（编辑后刷新）
+- **文件**: `mio-env-function:38`
+- **功能**: 重新加载 MioFlow 环境（编辑后刷新）
 - **用法**: `loadrenv`
 
-### update_NebulaFlow()
-- **文件**: `rebreath-env-function:47`
+### update_MioFlow()
+- **文件**: `mio-env-function:47`
 - **功能**: 从 GitHub 拉取最新代码并重装
-- **用法**: `update_NebulaFlow`
+- **用法**: `update_MioFlow`
 
 ### relib()
-- **文件**: `rebreath-env-function:66`
+- **文件**: `mio-env-function:66`
 - **功能**: 按关键词搜索并复制/查看库文件
 - **用法**: `relib [-v] [-m] <keyword1> [keyword2 ...]`
 - **说明**: -v 仅查看；-m 多层关键词搜索
@@ -1207,100 +1207,100 @@
 ## 17.2 文件记忆系统 (recc 系列)
 
 ### recc()
-- **文件**: `rebreath-env-function:151`
+- **文件**: `mio-env-function:151`
 - **功能**: 记录文件路径到临时记忆
 - **用法**: `recc file1.txt file2.xyz`
 
 ### recat()
-- **文件**: `rebreath-env-function:172`
+- **文件**: `mio-env-function:172`
 - **功能**: 查看记忆的文件列表
 - **用法**: `recat`
 
 ### revv()
-- **文件**: `rebreath-env-function:183`
+- **文件**: `mio-env-function:183`
 - **功能**: 将记忆的文件复制到目标目录
 - **用法**: `revv [target_dir]`
 
 ### reclean()
-- **文件**: `rebreath-env-function:164`
+- **文件**: `mio-env-function:164`
 - **功能**: 清空文件记忆
 - **用法**: `reclean`
 
 ## 17.3 路径与数学
 
 ### wslcd()
-- **文件**: `rebreath-env-function:195`
+- **文件**: `mio-env-function:195`
 - **功能**: 智能 cd（支持 Windows 路径自动转换）
-- **用法**: `wslcd D:\NebulaFlow`
+- **用法**: `wslcd D:\MioFlow`
 
 ### winpath()
-- **文件**: `rebreath-env-function:211`
+- **文件**: `mio-env-function:211`
 - **功能**: Windows 路径 → WSL 路径（仅输出）
-- **用法**: `winpath D:\NebulaFlow`
+- **用法**: `winpath D:\MioFlow`
 
 ### pow()
-- **文件**: `rebreath-env-function:229`
+- **文件**: `mio-env-function:229`
 - **功能**: 整数幂运算
 - **用法**: `pow 2 10` → 1024
 
 ### calc_time()
-- **文件**: `rebreath-env-function:236`
+- **文件**: `mio-env-function:236`
 - **功能**: 测量命令执行时间（毫秒）
 - **用法**: `calc_time "gpumd"`
 
 ### addpath()
-- **文件**: `rebreath-env-function:247`
+- **文件**: `mio-env-function:247`
 - **功能**: 添加目录到 PATH
 - **用法**: `addpath /path/to/dir`
 
 ### wc_file_lines()
-- **文件**: `rebreath-env-function:254`
+- **文件**: `mio-env-function:254`
 - **功能**: 按扩展名统计代码行数
 - **用法**: `wc_file_lines cpp h py`
 
 ## 17.4 目录管理
 
 ### dirman()
-- **文件**: `rebreath-env-function:455`
+- **文件**: `mio-env-function:455`
 - **功能**: 读取并显示目录的 .dirlog 文件
 - **用法**: `dirman /path/to/dir`
 
 ### wdlog()
-- **文件**: `rebreath-env-function:467`
+- **文件**: `mio-env-function:467`
 - **功能**: 编辑目录的 .dirlog 文件
 - **用法**: `wdlog [path]`
 
 ### search_large_files()
-- **文件**: `rebreath-env-function:320`
+- **文件**: `mio-env-function:320`
 - **功能**: 查找大于 20GB 的文件
 - **用法**: `search_large_files /home/user`
 
 ## 17.5 网络
 
 ### proxy_download()
-- **文件**: `rebreath-env-function:120`
+- **文件**: `mio-env-function:120`
 - **功能**: 通过 SSH 代理下载文件
 - **用法**: `proxy_download "wget http://example.com/file.tar.gz"`
 
 ### use_agent()
-- **文件**: `rebreath-env-function:112`
+- **文件**: `mio-env-function:112`
 - **功能**: 设置 HTTP 代理
 - **用法**: `use_agent`
 
 ## 17.6 教学/玩具
 
 ### compute_high_of_tree()
-- **文件**: `rebreath-env-function:481`
+- **文件**: `mio-env-function:481`
 - **功能**: Shell+C++ 教学示例（动态编译执行）
 - **用法**: `compute_high_of_tree`
 
 ### gpt9()
-- **文件**: `rebreath-env-function:513`
+- **文件**: `mio-env-function:513`
 - **功能**: 简易聊天机器人玩具
 - **用法**: `gpt9`
 
 ### mycat()
-- **文件**: `rebreath-env-function:530`
+- **文件**: `mio-env-function:530`
 - **功能**: 猫模拟器玩具
 - **用法**: `mycat`
 
@@ -1310,7 +1310,7 @@
 
 | 源文件 | 路径 | 函数数 | 主要领域 |
 |--------|------|--------|----------|
-| `rebreath-env-function` | 根目录 | ~20 | 核心工具/GPU调度/文件管理 |
+| `mio-env-function` | 根目录 | ~20 | 核心工具/GPU调度/文件管理 |
 | `vaspEnvFunction.sh` | envsrc/ | ~10 | VASP 计算 |
 | `gpumdEnvFunction.sh` | envsrc/ | ~38 | GPUMD/NEP/HNEMD/弹性/声子 |
 | `dealDataEnvFunction.sh` | envsrc/ | ~46 | 数据处理/结晶度/结构操作/碳纤维 |
@@ -1487,7 +1487,7 @@
 | `tran_xyz2pos` | §6.1 | XYZ→POSCAR |
 | `txt2mp3` | §16.2 | TXT→MP3 |
 | `update_cp2k_inp_cell_from_xyz` | §8 | CP2K 晶胞更新 |
-| `update_NebulaFlow` | §17.1 | 库更新 |
+| `update_MioFlow` | §17.1 | 库更新 |
 | `use_agent` | §17.5 | HTTP 代理 |
 | `use_pbc_run` | §8 | PBC CP2K |
 | `use_sccs_run` | §8 | SCCS CP2K |
@@ -1514,4 +1514,4 @@
 
 ---
 
-> **手册结束** | 最后更新: 2026-06-28 | NebulaFlow by rebreath
+> **手册结束** | 最后更新: 2026-06-28 | MioFlow (原 NebulaFlow) by rebreath
