@@ -6,6 +6,22 @@
 
 ---
 
+## CLI 快速查询
+
+无需打开整份手册即可从终端查询命令：
+
+```bash
+mio list cp2k             # 按关键词列出公共命令及简述
+mio search 声子谱         # 搜索名称、功能、用法、分类和独立脚本
+mio help cp2kstart        # 查看命令的功能、用法、来源和运行方式
+mio scripts vasp          # 单独查看底层 Python/Shell 脚本
+mio help auto/auto_vasp_nep1/Ctrl_auto_vasp_to_nep1
+```
+
+`mio list` 默认只展示本手册定义的公共 Shell 函数。`auto/`、`deal_data/` 等目录中的独立脚本通过 `mio scripts` 查询，并使用 `mio run <脚本> [参数]` 明确执行。
+
+---
+
 ## 目录
 
 - [快速索引：按任务查找](#快速索引按任务查找)

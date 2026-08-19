@@ -33,10 +33,30 @@ source $HOME/.mio/mio-env-function
 fi
 
 # -------------------------------------------------------------------------
-# Step 3: Make gpuq executable
-# Step 3: 设置 gpuq 为可执行
+# Step 3: Install/update the Python CLI and make launchers executable
+# Step 3: 安装/更新 Python CLI，并设置启动脚本为可执行
 # -------------------------------------------------------------------------
 chmod +x $HOME/.mio/gpuq
+chmod +x $HOME/.mio/sh_lib/run_cp2k_linux.sh 2>/dev/null || true
+
+if command -v python3 >/dev/null 2>&1 && python3 -m pip --version >/dev/null 2>&1; then
+    pip_install_args=(
+        --user
+        --no-deps
+        --no-build-isolation
+        --disable-pip-version-check
+        --upgrade
+    )
+    if python3 -m pip install --help 2>/dev/null | grep -q -- '--break-system-packages'; then
+        # Safe together with --user: permits installation into ~/.local only.
+        pip_install_args+=(--break-system-packages)
+    fi
+    if ! python3 -m pip install "${pip_install_args[@]}" "$HOME/.mio"; then
+        echo "Warning: failed to install the 'mio' CLI; Shell functions are still available." >&2
+    fi
+else
+    echo "Warning: python3/pip not found; skipped installing the 'mio' CLI." >&2
+fi
 
 # -------------------------------------------------------------------------
 # Step 4: Done — 提示用户加载环境

@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-mio = "mioflow.cli:main"
+mio = "mioflow_ref.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["mioflow*"]

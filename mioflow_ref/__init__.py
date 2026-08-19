@@ -10,6 +10,6 @@ MioFlow Python 核心库
   read_thermo   — 解析 GPUMD thermo.out
 """
 
-from .nebula import Config, read_xyz, write_xyz, write_xyz_list, write_xyz_config, read_thermo, get_index
+from .MIO import Config, read_xyz, write_xyz, write_xyz_list, write_xyz_config, read_thermo, get_index
 
 __all__ = ["Config", "read_xyz", "write_xyz", "write_xyz_list", "write_xyz_config", "read_thermo", "get_index"]

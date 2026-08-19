@@ -1,6 +1,6 @@
 <div align="center">
 
-![MioFlow Logo](logo/NebulaFlow-logo.png)
+![MioFlow Logo](logo/MioFlow-logo.png)
 
 **♡ 澪の工具箱 — 一行命令，完成复杂科学计算 / One Command, Complex Science Done.**
 
@@ -54,9 +54,9 @@ MioFlow/
 ├── .config                        # ⚙️  计算软件配置 / Executable paths config
 ├── pyproject.toml                 # 📦 pip 包配置 / Python package config
 │
-├── mioflow/                       # 🐍 Python 核心库 / Python core library
+├── mioflow_ref/                   # 🐍 Python 核心库 / Python core library
 │   ├── __init__.py                #    模块入口
-│   ├── nebula.py                  #    原子构型读写（Config / read_xyz / write_xyz）
+│   ├── MIO.py                     #    原子构型读写（Config / read_xyz / write_xyz）
 │   └── cli.py                     #    🎮 mio CLI 调度器
 │
 ├── envsrc/                        # 📚 功能模块（按软件分类）
@@ -84,9 +84,7 @@ MioFlow/
 ├── sh_lib/                        # 📜 独立 Shell 脚本
 ├── inp_lib/                       # 📋 输入文件模板（CP2K/VASP/LAMMPS）
 ├── logo/                          # 🎯 项目 Logo
-├── Manual/                        # 📖 函数参考手册
-│
-└── nebula_pylib → mioflow/        # 🔀 Python 包重命名（历史兼容）
+└── Manual/                        # 📖 命令说明与快速查询数据源
 ```
 
 ---
@@ -120,8 +118,9 @@ pip install git+https://github.com/re-breath/MioFlow.git
 
 安装后即可使用 `mio` 命令：
 ```bash
-mio --help     # 查看帮助
-mio --list     # 列出所有可用命令
+mio --help          # 查看帮助
+mio --list          # 列出公共命令及简述
+mio search cp2k     # 按名称、功能、用法和分类搜索
 ```
 
 ---
@@ -131,12 +130,16 @@ mio --list     # 列出所有可用命令
 `mio` 是 MioFlow 的 Python CLI 入口，安装 pip 包后随处可用：
 
 ```bash
-mio --list                          # 列出所有工具
-mio analyze_xyz_detail.py train.xyz # 执行 Python 脚本
-mio tran_xyz2cssr input output      # 格式转换
+mio list cp2k                       # 公共命令列表（右侧带简述）
+mio search 声子谱                   # 搜索命令、功能、用法和脚本
+mio help cp2kstart                  # 查看详细说明和使用方式
+mio scripts vasp                    # 查找底层 Python/Shell 脚本
+mio run deal_data/analyze_xyz_detail train.xyz
 ```
 
-所有传统 Bash 命令仍通过 `source mio-env-function` 加载：
+`mio list` 默认展示手册中的公共 Shell 函数；`auto/`、`deal_data/` 等底层脚本单独通过 `mio scripts` 查看。先执行 `mio help <名称>` 可以安全查看说明，不会运行脚本。
+
+所有传统 Bash 函数仍通过 `source mio-env-function` 加载：
 ```bash
 source ~/.mio/mio-env-function
 tran_xyz2cssr input.xyz output.cssr  # 仍然可用
