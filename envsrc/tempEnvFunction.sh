@@ -156,27 +156,6 @@ update_cp2k_inp_cell_from_xyz() {
 }
 
 
-cp2kstart() {
-# 临时函数，用来在曙光上启动 CP2K
-# 使用方式：cp2kstart cp2k.inp 32
-    local inpfile=${1:-"cp2k.inp"}
-    local cpu_num=${2:-32}
-    local job_name=$(basename "$PWD")
-    cat > temp.slurm <<EOF
-#!/bin/bash
-#SBATCH -J $job_name
-#SBATCH -N 1
-#SBATCH --ntasks-per-node=$cpu_num
-#SBATCH -p xahcnormal
-
-module purge
-module load cp2k/2023.1-intelmpi-2018
-
-srun --mpi=pmi2 cp2k.popt -i $inpfile -o cp2k.log
-EOF
-     sbatch  temp.slurm
-}
-
 find_dcu_speed() {
     find $PWD -type f -name "std.out*" -exec sh -c '
         for file; do

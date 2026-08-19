@@ -527,13 +527,14 @@
 
 # 8. CP2K 计算
 
-**源文件**: [envsrc/cp2kEnvFunction.sh](../envsrc/cp2kEnvFunction.sh) (99行) + `envsrc/tempEnvFunction.sh` (部分)
+**源文件**: [envsrc/cp2kEnvFunction.sh](../envsrc/cp2kEnvFunction.sh)
 
 ### cp2kstart()
-- **文件**: `envsrc/cp2kEnvFunction.sh:58` / `envsrc/tempEnvFunction.sh:159`
-- **功能**: 曙光超算提交 CP2K 任务
-- **用法**: `cp2kstart [cp2k.inp] [cpu_num]`
-- **说明**: 默认 32 核；加载 cp2k/2023.1-intelmpi-2018；srun --mpi=pmi2
+- **文件**: `envsrc/cp2kEnvFunction.sh`
+- **功能**: 自动选择 Slurm 提交或本地 Linux 运行 CP2K
+- **用法**: `cp2kstart [input.inp] [physical_cores]`
+- **说明**: Slurm 默认 32 核，使用 `xahcnormal`、`cp2k/2023.1-intelmpi-2018` 和 `srun --mpi=pmi2`；普通 Linux 调用 `sh_lib/run_cp2k_linux.sh` 并默认检测真实物理核数
+- **模式控制**: `CP2K_RUN_MODE=auto|slurm|local`；使用 `DRY_RUN=1` 可只预览命令或提交脚本
 
 ### cp2krestart2cif()
 - **文件**: `envsrc/cp2kEnvFunction.sh:24`

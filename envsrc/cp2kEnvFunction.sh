@@ -48,30 +48,197 @@ EOF
 
 # ---------------------------------------------------------------------------
 # Function: cp2kstart
-# 功能: 在曙光超算上生成SLURM脚本并提交CP2K任务
-# 场景: 在集群上运行CP2K几何优化或单点能计算时使用。
-# Usage: cp2kstart [cp2k.inp] [cpu_num]
+# 功能: 自动选择 Slurm 提交或本地 Linux 运行 CP2K
+# Usage: cp2kstart [input.inp] [physical_cores]
 # Example:
 #   cp2kstart cp2k.inp 32
-#   # 使用32核提交CP2K任务
+#   CP2K_RUN_MODE=local cp2kstart cp2k.inp 8
+#   CP2K_RUN_MODE=slurm DRY_RUN=1 cp2kstart cp2k.inp 32
 # ---------------------------------------------------------------------------
 cp2kstart() {
-    local inpfile=${1:-"cp2k.inp"}
-    local cpu_num=${2:-32}
-    local job_name=$(basename "$PWD")
-    cat > temp.slurm <<EOF
+    if (( $# > 2 )); then
+        echo "用法: cp2kstart [input.inp] [physical_cores]" >&2
+        return 2
+    fi
+
+    if [[ ${1:-} == "-h" || ${1:-} == "--help" ]]; then
+        cat <<'EOF'
+用法:
+  cp2kstart [input.inp] [physical_cores]
+
+自动模式:
+  Slurm 控制器可用 -> 生成 temp.slurm 并提交
+  其他 Linux      -> 调用 sh_lib/run_cp2k_linux.sh
+
+环境变量:
+  CP2K_RUN_MODE=auto|slurm|local       强制或自动选择运行方式
+  CP2K_SLURM_PARTITION=xahcnormal      Slurm 分区
+  CP2K_SLURM_MODULE=cp2k/...           Slurm CP2K module
+  CP2K_SLURM_EXE=cp2k.popt             Slurm CP2K 程序
+  MIOFLOW_CP2K_LOCAL_RUNNER=/path/...  本地运行脚本
+  DRY_RUN=1                             只预览，不运行或提交
+EOF
+        return 0
+    fi
+
+    local inpfile=${1:-}
+    local cpu_num=${2:-}
+    local -a inp_candidates=()
+
+    if [[ -z $inpfile ]]; then
+        if [[ -f cp2k.inp ]]; then
+            inpfile=cp2k.inp
+        else
+            local had_nullglob=0
+            if shopt -q nullglob; then
+                had_nullglob=1
+            fi
+            shopt -s nullglob
+            inp_candidates=(./*.inp)
+            if (( had_nullglob == 0 )); then
+                shopt -u nullglob
+            fi
+
+            case ${#inp_candidates[@]} in
+                0)
+                    echo "错误: 当前目录没有 cp2k.inp 或其他 *.inp 文件。" >&2
+                    return 1
+                    ;;
+                1)
+                    inpfile=${inp_candidates[0]}
+                    ;;
+                *)
+                    echo "错误: 当前目录有多个 *.inp 文件，请显式指定输入文件。" >&2
+                    return 1
+                    ;;
+            esac
+        fi
+    fi
+
+    if [[ ! -f $inpfile ]]; then
+        echo "错误: CP2K 输入文件不存在: $inpfile" >&2
+        return 1
+    fi
+    if [[ -n $cpu_num && ! $cpu_num =~ ^[1-9][0-9]*$ ]]; then
+        echo "错误: 核数必须是正整数: $cpu_num" >&2
+        return 1
+    fi
+
+    local input_abs input_dir input_name
+    input_abs=$(realpath -e -- "$inpfile") || return 1
+    input_dir=$(dirname -- "$input_abs")
+    input_name=$(basename -- "$input_abs")
+
+    local run_mode=${CP2K_RUN_MODE:-auto}
+    case $run_mode in
+        auto)
+            if command -v sbatch >/dev/null 2>&1 \
+                && command -v scontrol >/dev/null 2>&1 \
+                && scontrol ping 2>/dev/null | grep -qE 'is UP|UP$'; then
+                run_mode=slurm
+            else
+                run_mode=local
+            fi
+            ;;
+        slurm|local) ;;
+        *)
+            echo "错误: CP2K_RUN_MODE 只能是 auto、slurm 或 local。" >&2
+            return 1
+            ;;
+    esac
+
+    if [[ $run_mode == local ]]; then
+        if [[ $(uname -s 2>/dev/null) != Linux ]]; then
+            echo "错误: 本地 CP2K 运行脚本目前只支持 Linux。" >&2
+            return 1
+        fi
+
+        local function_file mioflow_root local_runner
+        function_file=${BASH_SOURCE[0]}
+        mioflow_root=$(cd -- "$(dirname -- "$function_file")/.." && pwd -P) || return 1
+        local_runner=${MIOFLOW_CP2K_LOCAL_RUNNER:-$mioflow_root/sh_lib/run_cp2k_linux.sh}
+        if [[ ! -f $local_runner ]]; then
+            echo "错误: 找不到本地 CP2K 运行脚本: $local_runner" >&2
+            return 1
+        fi
+
+        echo "运行模式: local Linux"
+        echo "运行脚本: $local_runner"
+        if [[ -n $cpu_num ]]; then
+            bash "$local_runner" "$input_abs" "$cpu_num"
+        else
+            bash "$local_runner" "$input_abs"
+        fi
+        return $?
+    fi
+
+    local partition=${CP2K_SLURM_PARTITION:-xahcnormal}
+    local cp2k_module=${CP2K_SLURM_MODULE:-cp2k/2023.1-intelmpi-2018}
+    local slurm_cp2k_exe=${CP2K_SLURM_EXE:-cp2k.popt}
+    local slurm_mpi=${CP2K_SLURM_MPI:-pmi2}
+    local slurm_script=${CP2K_SLURM_SCRIPT:-temp.slurm}
+    local job_name
+    cpu_num=${cpu_num:-32}
+    job_name=$(basename -- "$input_dir")
+    job_name=${job_name//[^[:alnum:]_.-]/_}
+    [[ -n $job_name ]] || job_name=cp2k
+
+    if [[ ! $partition =~ ^[[:alnum:]_.-]+$ ]]; then
+        echo "错误: Slurm 分区名包含不安全字符: $partition" >&2
+        return 1
+    fi
+    if [[ ! $slurm_mpi =~ ^[[:alnum:]_.-]+$ ]]; then
+        echo "错误: Slurm MPI 类型包含不安全字符: $slurm_mpi" >&2
+        return 1
+    fi
+    if [[ ${DRY_RUN:-0} != 1 ]] && ! command -v sbatch >/dev/null 2>&1; then
+        echo "错误: 找不到 sbatch；如需本地运行，请设置 CP2K_RUN_MODE=local。" >&2
+        return 1
+    fi
+
+    local quoted_input quoted_dir quoted_exe quoted_module
+    printf -v quoted_input '%q' "$input_name"
+    printf -v quoted_dir '%q' "$input_dir"
+    printf -v quoted_exe '%q' "$slurm_cp2k_exe"
+    printf -v quoted_module '%q' "$cp2k_module"
+
+    cat > "$slurm_script" <<EOF
 #!/bin/bash
 #SBATCH -J $job_name
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=$cpu_num
-#SBATCH -p xahcnormal
+#SBATCH --cpus-per-task=1
+#SBATCH --hint=nomultithread
+#SBATCH -p $partition
+
+set -e
 
 module purge
-module load cp2k/2023.1-intelmpi-2018
+module load $quoted_module
 
-srun --mpi=pmi2 cp2k.popt -i $inpfile -o cp2k.log
+export OMP_NUM_THREADS=1
+export OMP_DYNAMIC=FALSE
+export MKL_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+
+cd -- $quoted_dir
+srun --mpi=$slurm_mpi --cpu-bind=cores $quoted_exe -i $quoted_input -o cp2k.log
 EOF
-     sbatch  temp.slurm
+
+    echo "运行模式: Slurm"
+    echo "输入文件: $input_abs"
+    echo "任务名称: $job_name"
+    echo "任务核数: $cpu_num"
+    echo "分区:     $partition"
+    echo "脚本:     $slurm_script"
+
+    if [[ ${DRY_RUN:-0} == 1 ]]; then
+        echo "----- Slurm script -----"
+        cat "$slurm_script"
+        return 0
+    fi
+
+    sbatch -- "$slurm_script"
 }
 
 
