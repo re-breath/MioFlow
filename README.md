@@ -49,6 +49,7 @@
 ```
 MioFlow/
 ├── mio-env-function               # 🧠 核心函数库 / Core function library (entry point)
+├── mio                            # 🔎 零依赖 CLI 启动器 / Standalone CLI launcher
 ├── gpuq                           # 📊 GPU 队列管理器 / GPU queue management
 ├── MioFlowinstaller.sh            # 📦 一键安装脚本 / One-click installer
 ├── .config                        # ⚙️  计算软件配置 / Executable paths config

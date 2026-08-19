@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -e
+
+mio_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
+export MIO_HOME=${MIO_HOME:-$mio_root}
+exec python3 "$mio_root/mioflow_ref/cli.py" "$@"

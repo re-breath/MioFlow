@@ -1,6 +1,7 @@
 import contextlib
 import io
 import os
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -62,6 +63,19 @@ class MioCliTests(unittest.TestCase):
         status, output, errors = self.capture(["help", "plot_select_structure"])
         self.assertEqual(status, 2)
         self.assertIn("不唯一", output + errors)
+
+    def test_standalone_launcher_works_without_installed_package(self):
+        environment = os.environ.copy()
+        environment["MIO_HOME"] = str(REPOSITORY)
+        result = subprocess.run(
+            ["bash", str(REPOSITORY / "mio"), "list", "cp2k"],
+            check=False,
+            capture_output=True,
+            text=True,
+            env=environment,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("cp2kstart", result.stdout)
 
 
 if __name__ == "__main__":
